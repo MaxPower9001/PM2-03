@@ -16,6 +16,9 @@ public class TerminImpl implements Termin {
 	private Dauer dauer;
 
 	public TerminImpl(String beschreibung, Datum datum, Dauer dauer) {
+		this.beschreibung = beschreibung;
+		this.datum        = datum;
+		this.dauer        = dauer;
 	}
 
 

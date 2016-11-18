@@ -37,26 +37,22 @@ public class TagImpl implements Tag {
 
 	@Override
 	public int getJahr() {
-		// TODO Auto-generated method stub
-		return 0;
+		return intern.get(Calendar.YEAR);
 	}
 
 	@Override
 	public int getMonat() {
-		// TODO Auto-generated method stub
-		return 0;
+		return intern.get(Calendar.MONTH);
 	}
 
 	@Override
 	public int getTagImJahr() {
-		// TODO Auto-generated method stub
-		return 0;
+		return intern.get(Calendar.DAY_OF_YEAR);
 	}
 
 	@Override
 	public int getTagImMonat() {
-		// TODO Auto-generated method stub
-		return 0;
+		return intern.get(Calendar.DAY_OF_MONTH);
 	}
 
 	@Override
@@ -67,8 +63,7 @@ public class TagImpl implements Tag {
 
 	@Override
 	public Calendar inBasis() {
-		// TODO Auto-generated method stub
-		return null;
+		return (Calendar) intern.clone();
 	}
 
 }
