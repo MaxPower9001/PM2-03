@@ -1,8 +1,8 @@
-package kalender;
+package main.java.kalender;
 
 import java.util.Calendar;
 
-import kalender.interfaces.Uhrzeit;
+import main.java.kalender.interfaces.Uhrzeit;
 
 public class UhrzeitImpl implements Uhrzeit {
 	private Calendar intern;

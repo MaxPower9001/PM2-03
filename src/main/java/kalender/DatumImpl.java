@@ -1,13 +1,13 @@
-package kalender;
+package main.java.kalender;
 
 import java.util.Calendar;
 
-import kalender.interfaces.Datum;
-import kalender.interfaces.Dauer;
-import kalender.interfaces.Monat;
-import kalender.interfaces.Tag;
-import kalender.interfaces.Uhrzeit;
-import kalender.interfaces.Woche;
+import main.java.kalender.interfaces.Datum;
+import main.java.kalender.interfaces.Dauer;
+import main.java.kalender.interfaces.Monat;
+import main.java.kalender.interfaces.Tag;
+import main.java.kalender.interfaces.Uhrzeit;
+import main.java.kalender.interfaces.Woche;
 
 public class DatumImpl implements Datum {
 

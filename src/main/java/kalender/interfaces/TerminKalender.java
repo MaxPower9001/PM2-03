@@ -1,4 +1,4 @@
-package kalender.interfaces;
+package main.java.kalender.interfaces;
 
 import java.util.List;
 import java.util.Map;

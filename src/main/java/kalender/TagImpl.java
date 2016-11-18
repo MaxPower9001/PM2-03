@@ -1,9 +1,9 @@
-package kalender;
+package main.java.kalender;
 
 import java.util.Calendar;
 
-import kalender.interfaces.Datum;
-import kalender.interfaces.Tag;
+import main.java.kalender.interfaces.Datum;
+import main.java.kalender.interfaces.Tag;
 
 public class TagImpl implements Tag {
 

@@ -1,19 +1,19 @@
-package kalender;
+package main.java.kalender;
 
 import java.util.Iterator;
 import java.util.Map;
 
-import kalender.TerminMitWiederholungImpl.WiederholungImpl;
-import kalender.interfaces.Datum;
-import kalender.interfaces.DatumsGroesse;
-import kalender.interfaces.Dauer;
-import kalender.interfaces.IntervallIterator;
-import kalender.interfaces.Monat;
-import kalender.interfaces.Tag;
-import kalender.interfaces.Termin;
-import kalender.interfaces.TerminMitWiederholung;
-import kalender.interfaces.Wiederholung;
-import kalender.interfaces.Woche;
+import main.java.kalender.TerminMitWiederholungImpl.WiederholungImpl;
+import main.java.kalender.interfaces.Datum;
+import main.java.kalender.interfaces.DatumsGroesse;
+import main.java.kalender.interfaces.Dauer;
+import main.java.kalender.interfaces.IntervallIterator;
+import main.java.kalender.interfaces.Monat;
+import main.java.kalender.interfaces.Tag;
+import main.java.kalender.interfaces.Termin;
+import main.java.kalender.interfaces.TerminMitWiederholung;
+import main.java.kalender.interfaces.Wiederholung;
+import main.java.kalender.interfaces.Woche;
 
 public class TerminMitWiederholungImpl extends TerminImpl implements TerminMitWiederholung {
 

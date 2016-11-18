@@ -1,4 +1,4 @@
-package kalender.interfaces;
+package main.java.kalender.interfaces;
 
 public interface Dauer extends Comparable<Dauer> {
 	/*

@@ -1,14 +1,14 @@
-package kalender;
+package main.java.kalender;
 
 import java.util.List;
 import java.util.Map;
 
-import kalender.interfaces.Datum;
-import kalender.interfaces.Monat;
-import kalender.interfaces.Tag;
-import kalender.interfaces.Termin;
-import kalender.interfaces.TerminKalender;
-import kalender.interfaces.Woche;
+import main.java.kalender.interfaces.Datum;
+import main.java.kalender.interfaces.Monat;
+import main.java.kalender.interfaces.Tag;
+import main.java.kalender.interfaces.Termin;
+import main.java.kalender.interfaces.TerminKalender;
+import main.java.kalender.interfaces.Woche;
 
 public class TerminKalenderImpl implements TerminKalender {
 
