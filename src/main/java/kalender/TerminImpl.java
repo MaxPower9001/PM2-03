@@ -11,9 +11,9 @@ import main.java.kalender.interfaces.Termin;
 import main.java.kalender.interfaces.Woche;
 
 public class TerminImpl implements Termin {
-	String beschreibung;
-	Datum datum;
-	Dauer dauer;
+	private String beschreibung;
+	private Datum datum;
+	private Dauer dauer;
 
 	public TerminImpl(String beschreibung, Datum datum, Dauer dauer) {
 	}
