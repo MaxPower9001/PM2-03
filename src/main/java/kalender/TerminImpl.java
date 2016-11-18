@@ -1,5 +1,6 @@
 package main.java.kalender;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import main.java.kalender.interfaces.Datum;
@@ -10,6 +11,9 @@ import main.java.kalender.interfaces.Termin;
 import main.java.kalender.interfaces.Woche;
 
 public class TerminImpl implements Termin {
+	String beschreibung;
+	Datum datum;
+	Dauer dauer;
 
 	public TerminImpl(String beschreibung, Datum datum, Dauer dauer) {
 	}
@@ -17,50 +21,57 @@ public class TerminImpl implements Termin {
 
 	@Override
 	public int compareTo(Termin o) {
-		// TODO Auto-generated method stub
-		return 0;
+		return o.getDatum().compareTo(this.datum);
 	}
 
 	@Override
 	public String getBeschreibung() {
-		// TODO Auto-generated method stub
-		return null;
+		return beschreibung;
 	}
 
 	@Override
 	public Datum getDatum() {
-		// TODO Auto-generated method stub
-		return null;
+		return datum;
 	}
 
 	@Override
 	public Dauer getDauer() {
-		// TODO Auto-generated method stub
-		return null;
+		return dauer;
 	}
 
 	@Override
 	public Termin verschiebeAuf(Datum datum) {
-		// TODO Auto-generated method stub
-		return null;
+		return new TerminImpl(this.beschreibung, datum, this.dauer);
 	}
 
 	@Override
 	public Map<Datum, Termin> termineIn(Monat monat) {
-		// TODO Auto-generated method stub
-		return null;
+		Map<Datum, Termin> retVal = new HashMap<Datum, Termin>();
+		
+		if(datum.getMonat() == monat)
+			retVal.put(datum, this);
+		
+		return retVal;
 	}
 
 	@Override
 	public Map<Datum, Termin> termineIn(Woche woche) {
-		// TODO Auto-generated method stub
-		return null;
+		Map<Datum, Termin> retVal = new HashMap<Datum, Termin>();
+		
+		if(datum.getWoche() == woche)
+			retVal.put(datum, this);
+		
+		return retVal;
 	}
 
 	@Override
 	public Map<Datum, Termin> termineAn(Tag tag) {
-		// TODO Auto-generated method stub
-		return null;
+		Map<Datum, Termin> retVal = new HashMap<Datum, Termin>();
+		
+		if(datum.getTag() == tag)
+			retVal.put(datum, this);
+		
+		return retVal;
 	}
 
 }
