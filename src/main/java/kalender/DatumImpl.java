@@ -1,6 +1,7 @@
 package main.java.kalender;
 
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import main.java.kalender.interfaces.Datum;
 import main.java.kalender.interfaces.Dauer;
@@ -11,121 +12,109 @@ import main.java.kalender.interfaces.Woche;
 
 public class DatumImpl implements Datum {
 
-
 	private Calendar intern;
 	
 	public DatumImpl(Tag tag){
+		this(tag,new UhrzeitImpl());
 	}
 	public DatumImpl(Tag tag, Uhrzeit uhrzeit ) {
+		this(new GregorianCalendar(tag.getJahr(), tag.getMonat(), tag.getTagImMonat(), uhrzeit.getStunde(), uhrzeit.getMinuten()));
 	}
 
 	public DatumImpl(Datum d) {
+		this(d.getTag(), d.getUhrzeit());
 	}
 
 	private DatumImpl(Calendar intern) {
+		this.intern = intern;
 	}
 	
 	
 	@Override
 	public int compareTo(Datum o) {
-		// TODO Auto-generated method stub
-		return 0;
+		return getTag().compareTo(o.getTag()) == 0 ? 0 : getUhrzeit().compareTo(o.getUhrzeit());
 	}
 
 	@Override
 	public Tag getTag() {
-		// TODO Auto-generated method stub
-		return null;
+		return new TagImpl(intern.get(Calendar.YEAR),intern.get(Calendar.DAY_OF_YEAR));
 	}
 
 	@Override
 	public Woche getWoche() {
-		// TODO Auto-generated method stub
-		return null;
+		return new WocheImpl(intern.get(Calendar.YEAR),intern.get(Calendar.MONTH),intern.get(Calendar.WEEK_OF_MONTH));
 	}
 
 	@Override
 	public Monat getMonat() {
-		// TODO Auto-generated method stub
-		return null;
+		return new MonatImpl(intern.get(Calendar.YEAR),intern.get(Calendar.MONTH));
 	}
 
 	@Override
 	public Uhrzeit getUhrzeit() {
-		// TODO Auto-generated method stub
-		return null;
+		return new UhrzeitImpl(intern.get(Calendar.HOUR_OF_DAY),intern.get(Calendar.MINUTE));
 	}
 
 	@Override
 	public int getJahr() {
-		// TODO Auto-generated method stub
-		return 0;
+		return intern.get(Calendar.YEAR);
 	}
 
 	@Override
 	public int getTagImMonat() {
-		// TODO Auto-generated method stub
-		return 0;
+		return intern.get(Calendar.DAY_OF_MONTH);
 	}
 
 	@Override
 	public int getTagImJahr() {
-		// TODO Auto-generated method stub
-		return 0;
+		return intern.get(Calendar.DAY_OF_YEAR);
 	}
 
 	@Override
 	public int getWocheImMonat() {
-		// TODO Auto-generated method stub
-		return 0;
+		return intern.get(Calendar.WEEK_OF_MONTH);
 	}
 
 	@Override
 	public int getWocheImJahr() {
-		// TODO Auto-generated method stub
-		return 0;
+		return intern.get(Calendar.WEEK_OF_YEAR);
 	}
 
 	@Override
 	public int getMonatImJahr() {
-		// TODO Auto-generated method stub
-		return 0;
+		return intern.get(Calendar.MONTH);
 	}
 
 	@Override
 	public Datum add(Dauer dauer) {
-		// TODO Auto-generated method stub
-		return null;
+		intern.add(Calendar.MINUTE, dauer.inMinuten());
+		return this;
 	}
 
 	@Override
 	public Datum sub(Dauer dauer) {
-		// TODO Auto-generated method stub
-		return null;
+		intern.add(Calendar.MINUTE, -dauer.inMinuten());
+		return this;
 	}
 
 	@Override
 	public Dauer abstand(Datum d) {
-		// TODO Auto-generated method stub
-		return null;
+		return new DauerImpl(inMinuten()-d.inMinuten());
 	}
 
 	@Override
 	public long differenzInTagen(Datum d) {
-		// TODO Auto-generated method stub
-		return 0;
+		return getTag().differenzInTagen(d.getTag());
 	}
 
 	@Override
 	public int inMinuten() {
-		// TODO Auto-generated method stub
-		return 0;
+		return (int) (intern.getTimeInMillis() / 1000L / 60L);
 	}
 
 	@Override
 	public Calendar inBasis() {
-		// TODO Auto-generated method stub
-		return null;
+		return new GregorianCalendar(getJahr(), getMonatImJahr(), getTagImMonat());
 	}
 
 }

@@ -1,6 +1,7 @@
 package main.java.kalender;
 
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import main.java.kalender.interfaces.Datum;
 import main.java.kalender.interfaces.Dauer;
@@ -14,30 +15,34 @@ public class MonatImpl implements Monat {
 	private Calendar intern;
 
 	public MonatImpl(int jahr, int monat) {
+		intern = Calendar.getInstance();
+		intern.clear();
+		intern.set(Calendar.YEAR, jahr);
+		intern.set(Calendar.MONTH, monat);
 	}
 
 	@Override
 	public Datum getStart() {
-		// TODO Auto-generated method stub
-		return null;
+		Tag tag = new TagImpl(intern.get(Calendar.YEAR),intern.get(Calendar.MONTH),intern.getActualMinimum(Calendar.DAY_OF_MONTH));
+		Uhrzeit uhrzeit = new UhrzeitImpl(0,0);
+		return new DatumImpl(tag,uhrzeit);
 	}
 
 	@Override
 	public Datum getEnde() {
-		// TODO Auto-generated method stub
-		return null;
+		Tag tag = new TagImpl(intern.get(Calendar.YEAR),intern.get(Calendar.MONTH),intern.getActualMaximum(Calendar.DAY_OF_MONTH));
+		Uhrzeit uhrzeit = new UhrzeitImpl(0,0);
+		return new DatumImpl(tag,uhrzeit);	
 	}
 
 	@Override
 	public int getMonat() {
-		// TODO Auto-generated method stub
-		return 0;
+		return intern.get(Calendar.MONTH);
 	}
 
 	@Override
 	public int getJahr() {
-		// TODO Auto-generated method stub
-		return 0;
+		return intern.get(Calendar.YEAR);
 	}
 
 }

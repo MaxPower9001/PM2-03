@@ -1,38 +1,47 @@
 package main.java.kalender;
 
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import main.java.kalender.interfaces.Datum;
 import main.java.kalender.interfaces.Tag;
+import main.java.kalender.interfaces.Uhrzeit;
 
 public class TagImpl implements Tag {
 
 	private Calendar intern; 
 	
 	public TagImpl(int jahr, int tagImJahr) {
+		intern = Calendar.getInstance();
+		intern.clear();
+		intern.set(Calendar.YEAR, jahr);
+		intern.set(Calendar.DAY_OF_YEAR, tagImJahr);
 	}
 	public TagImpl(int jahr, int monat, int tagImMonat) {
+		intern = new GregorianCalendar(jahr,monat,tagImMonat);
 	}
 	
 	public TagImpl(Tag tag) {
+		intern = tag.inBasis();
 	}
 
 	@Override
 	public Datum getStart() {
-		// TODO Auto-generated method stub
-		return null;
+		Tag tag = new TagImpl(intern.get(Calendar.YEAR),intern.get(Calendar.MONTH),intern.get(Calendar.DAY_OF_MONTH));
+		Uhrzeit uhrzeit = new UhrzeitImpl(0,0);
+		return new DatumImpl(tag,uhrzeit);
 	}
 
 	@Override
 	public Datum getEnde() {
-		// TODO Auto-generated method stub
-		return null;
+		Tag tag = new TagImpl(intern.get(Calendar.YEAR),intern.get(Calendar.MONTH),intern.get(Calendar.DAY_OF_MONTH));
+		Uhrzeit uhrzeit = new UhrzeitImpl(23,59);
+		return new DatumImpl(tag,uhrzeit);
 	}
 
 	@Override
 	public int compareTo(Tag o) {
-		// TODO Auto-generated method stub
-		return 0;
+		return intern.compareTo(o.inBasis());
 	}
 
 	@Override
@@ -57,8 +66,10 @@ public class TagImpl implements Tag {
 
 	@Override
 	public long differenzInTagen(Tag other) {
-		// TODO Auto-generated method stub
-		return 0;
+		long thisMillis = intern.getTimeInMillis();
+		long otherMillis = other.inBasis().getTimeInMillis();
+		long diffMillis = thisMillis > otherMillis ? thisMillis - otherMillis : otherMillis - thisMillis;
+		return diffMillis / 1000 / 60 / 60 / 24;
 	}
 
 	@Override
