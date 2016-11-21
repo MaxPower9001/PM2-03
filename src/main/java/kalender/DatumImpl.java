@@ -116,5 +116,9 @@ public class DatumImpl implements Datum {
 	public Calendar inBasis() {
 		return new GregorianCalendar(getJahr(), getMonatImJahr(), getTagImMonat());
 	}
-
+	@Override
+	public String toString() {
+		return intern.getTime().toString();
+	}
+	
 }

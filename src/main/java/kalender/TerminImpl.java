@@ -51,7 +51,7 @@ public class TerminImpl implements Termin {
 	public Map<Datum, Termin> termineIn(Monat monat) {
 		Map<Datum, Termin> retVal = new HashMap<Datum, Termin>();
 		
-		if(datum.getMonat() == monat)
+		if(datum.getMonat().equals(monat))
 			retVal.put(datum, this);
 		
 		return retVal;
@@ -61,7 +61,7 @@ public class TerminImpl implements Termin {
 	public Map<Datum, Termin> termineIn(Woche woche) {
 		Map<Datum, Termin> retVal = new HashMap<Datum, Termin>();
 		
-		if(datum.getWoche() == woche)
+		if(datum.getWoche().equals(woche))
 			retVal.put(datum, this);
 		
 		return retVal;
@@ -71,7 +71,7 @@ public class TerminImpl implements Termin {
 	public Map<Datum, Termin> termineAn(Tag tag) {
 		Map<Datum, Termin> retVal = new HashMap<Datum, Termin>();
 		
-		if(datum.getTag() == tag)
+		if(datum.getTag().equals(tag))
 			retVal.put(datum, this);
 		
 		return retVal;

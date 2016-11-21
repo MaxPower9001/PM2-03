@@ -74,5 +74,7 @@ public class DauerImpl implements Dauer {
 	public int anteilWochen() {
 		return this.minuten / WOCHEINMINUTEN;
 	}
-
+	
+	
+	
 }

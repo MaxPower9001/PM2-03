@@ -1,7 +1,9 @@
 package main.java.kalender;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import main.java.kalender.interfaces.Datum;
 import main.java.kalender.interfaces.Dauer;
@@ -44,5 +46,49 @@ public class MonatImpl implements Monat {
 	public int getJahr() {
 		return intern.get(Calendar.YEAR);
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((intern == null) ? 0 : intern.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		MonatImpl other = (MonatImpl) obj;
+		if (intern == null) {
+			if (other.intern != null)
+				return false;
+		} else if (!(this.intern.compareTo(other.intern) != 0))
+			return false;
+		return true;
+	}
+
+	@Override
+	public List<Tag> getTageDesMonat() {
+		List<Tag> retVal = new ArrayList<>();
+		
+		retVal.add(getStart().getTag());
+		
+		Datum iterator = new DatumImpl(getStart().getTag());		
+		
+		while(iterator.abstand(getEnde()).inTagen() > 0)
+		{
+			iterator = iterator.add(new DauerImpl(1, 0, 0));
+			retVal.add(iterator.getTag());
+		}	
+		
+		return retVal;
+	}
+	
+	
 
 }

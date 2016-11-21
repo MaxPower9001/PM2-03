@@ -33,9 +33,8 @@ public class UhrzeitImpl implements Uhrzeit {
 			return -1;
 		if(o.getStunde() > this.getStunde())
 			return 1;
-		else
-			if(o.getMinuten() < this.getMinuten())
-				return -1;
+		if(o.getMinuten() < this.getMinuten())
+			return -1;
 		return 1;
 	}
 
@@ -49,4 +48,30 @@ public class UhrzeitImpl implements Uhrzeit {
 		return intern.get(Calendar.MINUTE);
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((intern == null) ? 0 : intern.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		UhrzeitImpl other = (UhrzeitImpl) obj;
+		if (intern == null) {
+			if (other.intern != null)
+				return false;
+		} else if (!(this.intern.compareTo(other.intern) != 0))
+			return false;
+		return true;
+	}
+
+	
 }
