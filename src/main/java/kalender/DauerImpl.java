@@ -1,19 +1,13 @@
 package main.java.kalender;
 
-import java.util.Calendar;
-
 import main.java.kalender.interfaces.Datum;
 import main.java.kalender.interfaces.Dauer;
-import main.java.kalender.interfaces.Monat;
-import main.java.kalender.interfaces.Tag;
-import main.java.kalender.interfaces.Uhrzeit;
-import main.java.kalender.interfaces.Woche;
 
 public class DauerImpl implements Dauer {
 
-	final int STUNDEINMINUTEN = 60;
-	final int TAGINMINUTEN = 24 * STUNDEINMINUTEN;
-	final int WOCHEINMINUTEN = 7 * TAGINMINUTEN;
+	final static int STUNDEINMINUTEN = 60;
+	final static int TAGINMINUTEN = 24 * STUNDEINMINUTEN;
+	final static int WOCHEINMINUTEN = 7 * TAGINMINUTEN;
 
 	private int minuten;
 	
@@ -26,11 +20,11 @@ public class DauerImpl implements Dauer {
 	}
 	
 	public DauerImpl(int stunden, int minuten) {
-		this(stunden*60 + minuten);
+		this(stunden*STUNDEINMINUTEN + minuten);
 	}
 
 	public DauerImpl(int tage, int stunden, int minuten) {
-		this(tage*24*60 + stunden*60 + minuten);
+		this(tage*TAGINMINUTEN + stunden*STUNDEINMINUTEN + minuten);
 	}
 
 	@Override
@@ -45,17 +39,17 @@ public class DauerImpl implements Dauer {
 
 	@Override
 	public int inStunden() {
-		return minuten / 60;
+		return minuten / STUNDEINMINUTEN;
 	}
 
 	@Override
 	public int inTagen() {
-		return minuten / 60 / 24;
+		return minuten / TAGINMINUTEN;
 	}
 
 	@Override
 	public int inWochen() {
-		return minuten / 60 / 24 / 7;
+		return minuten / WOCHEINMINUTEN;
 	}
 
 	@Override
