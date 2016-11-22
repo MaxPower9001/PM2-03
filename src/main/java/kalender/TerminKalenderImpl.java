@@ -28,7 +28,7 @@ public class TerminKalenderImpl implements TerminKalender {
 	
 	@Override
 	public boolean eintragen(Termin termin) {
-		if(termin instanceof TerminMitWiederholung)
+		if(!(termin instanceof TerminMitWiederholung))
 			return termine.add(termin);
 		return termineMitWiederholung.add((TerminMitWiederholung) termin);
 		
@@ -110,8 +110,10 @@ public class TerminKalenderImpl implements TerminKalender {
 		
 		monat.getTageDesMonat().stream().forEach(t -> 
 		{
+			System.out.println(t);
 			Datum key = new DatumImpl(t);
-			retVal.put(key, termineFuerTag(t).get(key));			
+			List<Termin> temp = termineFuerTag(t).get(key);
+			retVal.put(key, temp);			
 		});
 		return retVal;
 	}

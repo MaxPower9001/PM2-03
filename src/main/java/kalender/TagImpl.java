@@ -99,6 +99,10 @@ public class TagImpl implements Tag {
 			return false;
 		return true;
 	}
+	@Override
+	public String toString() {
+		return intern.getTime().toString();
+	}
 	
 	
 

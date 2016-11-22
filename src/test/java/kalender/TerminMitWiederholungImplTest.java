@@ -17,7 +17,7 @@ import main.java.kalender.interfaces.TerminMitWiederholung;
 public class TerminMitWiederholungImplTest {
 
 	@Test
-	public void testSth() {
+	public void testTerminMitWiederholungIntervallIterator() {
 		TerminMitWiederholung unserTermin = new TerminMitWiederholungImpl(
 				"TestTermin",
 				new DatumImpl(new TagImpl(2016,10,21)),
@@ -25,11 +25,14 @@ public class TerminMitWiederholungImplTest {
 				WiederholungType.WOECHENTLICH,
 				5,
 				2);
-		IntervallIterator<Datum> pewpew = unserTermin.intervallIterator(1, 5);
-		while(pewpew.hasNext())
+		IntervallIterator<Datum> iterator = unserTermin.intervallIterator(1, 5);
+		int counter = 0;
+		while(iterator.hasNext())
 		{
-			System.out.println(pewpew.next());
+			counter++;
+			iterator.next();
 		}
+		assertEquals(5,counter);
 	}
-
+	
 }
