@@ -120,12 +120,12 @@ public class TerminMitWiederholungImpl extends TerminImpl implements TerminMitWi
 		// wenn endIndex < startIndex || endIndex < 0 || startIndex < 0 ||
 		// endIndex > maxIntervallIndex ???
 		// gib null zurück
+		Map<Datum,Termin> retVal = new HashMap<Datum, Termin>();
 		if(ende < start || ende < 0 || start < 0)
 		{
-			return null;
+			return retVal;
 		}
 		// Map erzeugen und die Wiederholungen einsammeln
-		Map<Datum,Termin> retVal = new HashMap<Datum, Termin>();
 		IntervallIterator<Datum> intervallIterator = this.intervallIterator(start, ende);
 		while(intervallIterator.hasNext())
 		{

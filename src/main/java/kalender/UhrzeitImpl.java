@@ -1,5 +1,6 @@
 package main.java.kalender;
 
+import java.text.DateFormat;
 import java.util.Calendar;
 
 import main.java.kalender.interfaces.Uhrzeit;
@@ -71,6 +72,11 @@ public class UhrzeitImpl implements Uhrzeit {
 		} else if (!(this.intern.compareTo(other.intern) != 0))
 			return false;
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return DateFormat.getTimeInstance(DateFormat.SHORT).format(intern.getTime());
 	}
 
 	

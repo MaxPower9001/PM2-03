@@ -1,5 +1,6 @@
 package main.java.kalender;
 
+import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -18,7 +19,13 @@ public class DatumImpl implements Datum {
 		this(tag,new UhrzeitImpl());
 	}
 	public DatumImpl(Tag tag, Uhrzeit uhrzeit ) {
-		this(new GregorianCalendar(tag.getJahr(), tag.getMonat(), tag.getTagImMonat(), uhrzeit.getStunde(), uhrzeit.getMinuten()));
+		intern = Calendar.getInstance();
+		intern.clear();
+		intern.set(Calendar.YEAR, tag.getJahr());
+		intern.set(Calendar.MONTH, tag.getMonat());
+		intern.set(Calendar.DAY_OF_MONTH,tag.getTagImMonat());
+		intern.set(Calendar.HOUR_OF_DAY,uhrzeit.getStunde());
+		intern.set(Calendar.MINUTE,uhrzeit.getMinuten());
 	}
 
 	public DatumImpl(Datum d) {
@@ -32,7 +39,7 @@ public class DatumImpl implements Datum {
 	
 	@Override
 	public int compareTo(Datum o) {
-		return getTag().compareTo(o.getTag()) == 0 ? 0 : getUhrzeit().compareTo(o.getUhrzeit());
+		return intern.compareTo(o.inBasis());
 	}
 
 	@Override
@@ -87,14 +94,16 @@ public class DatumImpl implements Datum {
 
 	@Override
 	public Datum add(Dauer dauer) {
-		intern.add(Calendar.MINUTE, dauer.inMinuten());
-		return this;
+		Calendar newCalendar = this.inBasis();
+		newCalendar.add(Calendar.MINUTE, dauer.inMinuten());
+		return new DatumImpl(newCalendar);
 	}
 
 	@Override
 	public Datum sub(Dauer dauer) {
-		intern.add(Calendar.MINUTE, -dauer.inMinuten());
-		return this;
+		Calendar newCalendar = this.inBasis();
+		newCalendar.add(Calendar.MINUTE, -dauer.inMinuten());
+		return new DatumImpl(newCalendar);
 	}
 
 	@Override
@@ -114,11 +123,12 @@ public class DatumImpl implements Datum {
 
 	@Override
 	public Calendar inBasis() {
-		return new GregorianCalendar(getJahr(), getMonatImJahr(), getTagImMonat());
+		return (Calendar) intern.clone();
 	}
+	
 	@Override
 	public String toString() {
-		return intern.getTime().toString();
+		return DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(intern.getTime());
 	}
 	@Override
 	public int hashCode() {

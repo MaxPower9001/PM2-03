@@ -1,5 +1,6 @@
 package main.java.kalender;
 
+import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -18,7 +19,11 @@ public class TagImpl implements Tag {
 		intern.set(Calendar.DAY_OF_YEAR, tagImJahr);
 	}
 	public TagImpl(int jahr, int monat, int tagImMonat) {
-		intern = new GregorianCalendar(jahr,monat,tagImMonat);
+		intern = Calendar.getInstance();
+		intern.clear();
+		intern.set(Calendar.YEAR, jahr);
+		intern.set(Calendar.MONTH, monat);
+		intern.set(Calendar.DAY_OF_MONTH, tagImMonat);
 	}
 	
 	public TagImpl(Tag tag) {
@@ -27,14 +32,14 @@ public class TagImpl implements Tag {
 
 	@Override
 	public Datum getStart() {
-		Tag tag = new TagImpl(intern.get(Calendar.YEAR),intern.get(Calendar.MONTH),intern.get(Calendar.DAY_OF_MONTH));
+		Tag tag = new TagImpl(this);
 		Uhrzeit uhrzeit = new UhrzeitImpl(0,0);
 		return new DatumImpl(tag,uhrzeit);
 	}
 
 	@Override
 	public Datum getEnde() {
-		Tag tag = new TagImpl(intern.get(Calendar.YEAR),intern.get(Calendar.MONTH),intern.get(Calendar.DAY_OF_MONTH));
+		Tag tag = new TagImpl(this);
 		Uhrzeit uhrzeit = new UhrzeitImpl(23,59);
 		return new DatumImpl(tag,uhrzeit);
 	}
@@ -68,7 +73,8 @@ public class TagImpl implements Tag {
 	public long differenzInTagen(Tag other) {
 		long thisMillis = intern.getTimeInMillis();
 		long otherMillis = other.inBasis().getTimeInMillis();
-		long diffMillis = thisMillis > otherMillis ? thisMillis - otherMillis : otherMillis - thisMillis;
+		long diffMillis = thisMillis-otherMillis;
+		//long diffMillis = thisMillis > otherMillis ? thisMillis - otherMillis : otherMillis - thisMillis;
 		return diffMillis / 1000 / 60 / 60 / 24;
 	}
 
@@ -95,13 +101,13 @@ public class TagImpl implements Tag {
 		if (intern == null) {
 			if (other.intern != null)
 				return false;
-		} else if (!(this.intern.compareTo(other.intern) != 0))
+		} else if (this.intern.compareTo(other.intern) != 0)
 			return false;
 		return true;
 	}
 	@Override
 	public String toString() {
-		return intern.getTime().toString();
+		return DateFormat.getDateInstance(DateFormat.SHORT).format(intern.getTime());
 	}
 	
 	

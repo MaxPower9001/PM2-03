@@ -29,7 +29,7 @@ public class DauerImpl implements Dauer {
 
 	@Override
 	public int compareTo(Dauer o) {
-		return inMinuten() == o.inMinuten() ? 0 : (inMinuten() < o.inMinuten() ? -1 : 1);
+		return inMinuten() - o.inMinuten();
 	}
 
 	@Override
@@ -73,6 +73,28 @@ public class DauerImpl implements Dauer {
 	@Override
 	public int anteilWochen() {
 		return this.minuten / WOCHEINMINUTEN;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + minuten;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		DauerImpl other = (DauerImpl) obj;
+		if (minuten != other.minuten)
+			return false;
+		return true;
 	}
 	
 	

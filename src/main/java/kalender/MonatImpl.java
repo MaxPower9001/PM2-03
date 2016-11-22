@@ -33,7 +33,7 @@ public class MonatImpl implements Monat {
 	@Override
 	public Datum getEnde() {
 		Tag tag = new TagImpl(intern.get(Calendar.YEAR),intern.get(Calendar.MONTH),intern.getActualMaximum(Calendar.DAY_OF_MONTH));
-		Uhrzeit uhrzeit = new UhrzeitImpl(0,0);
+		Uhrzeit uhrzeit = new UhrzeitImpl(23,59);
 		return new DatumImpl(tag,uhrzeit);	
 	}
 
@@ -67,28 +67,8 @@ public class MonatImpl implements Monat {
 		if (intern == null) {
 			if (other.intern != null)
 				return false;
-		} else if (!(this.intern.compareTo(other.intern) != 0))
+		} else if (this.intern.compareTo(other.intern) != 0)
 			return false;
 		return true;
 	}
-
-	@Override
-	public List<Tag> getTageDesMonat() {
-		List<Tag> retVal = new ArrayList<>();
-		
-		retVal.add(getStart().getTag());
-		
-		Datum iterator = new DatumImpl(getStart().getTag());		
-		
-		while(iterator.abstand(getEnde()).inTagen() > 0)
-		{
-			iterator = iterator.add(new DauerImpl(1, 0, 0));
-			retVal.add(iterator.getTag());
-		}	
-		
-		return retVal;
-	}
-	
-	
-
 }

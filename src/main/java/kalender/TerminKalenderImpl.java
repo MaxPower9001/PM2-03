@@ -18,75 +18,51 @@ import main.java.kalender.interfaces.Woche;
 
 public class TerminKalenderImpl implements TerminKalender {
 	
-	List<TerminMitWiederholung> termineMitWiederholung;
 	List<Termin> termine;
 	
 	public TerminKalenderImpl() {
 		termine = new ArrayList<>();
-		termineMitWiederholung = new ArrayList<>();
 	}	
 	
 	@Override
 	public boolean eintragen(Termin termin) {
-		if(!(termin instanceof TerminMitWiederholung))
-			return termine.add(termin);
-		return termineMitWiederholung.add((TerminMitWiederholung) termin);
-		
+		return termine.add(termin);		
 	}
 
 	@Override
 	public void verschiebenAuf(Termin termin, Datum datum) {
-		int index = termineMitWiederholung.indexOf(termin);
+		int index = termine.indexOf(termin);
 		if(index > -1)
 		{
-			termineMitWiederholung.get(index).verschiebeAuf(datum);
+			termine.get(index).verschiebeAuf(datum);
 		}
-		else {
-			index = termine.indexOf(termin);
-			if(index > -1)
-				termine.get(index).verschiebeAuf(datum);
-		}		
 	}
 
 	@Override
 	public boolean terminLoeschen(Termin termin) {
-		boolean versuchOans = termine.remove(termin);
-		boolean versuchZwoa = termineMitWiederholung.remove(termin);
-		return versuchOans || versuchZwoa;
+		return termine.remove(termin);
 	}
 
 	@Override
 	public boolean enthaeltTermin(Termin termin) {
-		boolean versuchOans = termine.contains(termin);
-		boolean versuchZwoa = termineMitWiederholung.contains(termin);
-		return versuchOans || versuchZwoa;
+		return termine.contains(termin);
 	}
 
 	@Override
 	public Map<Datum, List<Termin>> termineFuerTag(Tag tag) {
 		Map<Datum, List<Termin>> retVal = new HashMap<>();
-		List<Termin> terminListe = new ArrayList<>();
-				
-		Datum tagDatum = new DatumImpl(tag);
 		
-		terminListe =
-				termineMitWiederholung.stream().
-				map(t -> t.termineFuer(tag)).
-				filter(t -> t != null).
-				map(t -> t.values()).
-				flatMap(l -> l.stream()).
-				collect(Collectors.toList());		
-		
-		terminListe.addAll(
-				termine.stream().
-				map(t -> t.termineAn(tag)).
-				filter(t -> t != null).
-				map(t -> t.values()).
-				flatMap(l -> l.stream()).
-				collect(Collectors.toList()));
-		
-		retVal.put(tagDatum, terminListe);
-		
+		for(Termin t : termine)
+		{
+			Map<Datum,Termin> termineIn = t.termineAn(tag);
+			termineIn.forEach((k,v) -> {
+				if(!retVal.containsKey(k))
+				{
+					retVal.put(k, new ArrayList<Termin>());
+				}
+					retVal.get(k).add(t);
+			});
+		}
 		return retVal;		
 	}
 
@@ -94,27 +70,36 @@ public class TerminKalenderImpl implements TerminKalender {
 	public Map<Datum, List<Termin>> termineFuerWoche(Woche woche) {
 		Map<Datum, List<Termin>> retVal = new HashMap<>();
 		
-		
-		woche.getTageDerWoche().stream().forEach(t -> 
+		for(Termin t : termine)
 		{
-			Datum key = new DatumImpl(t);
-			retVal.put(key, termineFuerTag(t).get(key));			
-		});
+			Map<Datum,Termin> termineIn = t.termineIn(woche);
+			termineIn.forEach((k,v) -> {
+				if(!retVal.containsKey(k))
+				{
+					retVal.put(k, new ArrayList<Termin>());
+				}
+					retVal.get(k).add(t);
+			});
+		}
 		return retVal;
 	}
 
 	@Override
 	public Map<Datum, List<Termin>> termineFuerMonat(Monat monat) {
 		Map<Datum, List<Termin>> retVal = new HashMap<>();
-		
-		
-		monat.getTageDesMonat().stream().forEach(t -> 
+				
+		termine.forEach(t ->
 		{
-			System.out.println(t);
-			Datum key = new DatumImpl(t);
-			List<Termin> temp = termineFuerTag(t).get(key);
-			retVal.put(key, temp);			
+			Map<Datum,Termin> termineIn = t.termineIn(monat);
+			termineIn.forEach((k,v) -> {
+				if(!retVal.containsKey(k))
+				{
+					retVal.put(k, new ArrayList<Termin>());
+				}
+					retVal.get(k).add(t);
+			});
 		});
-		return retVal;
+		
+		return retVal;		
 	}
 }

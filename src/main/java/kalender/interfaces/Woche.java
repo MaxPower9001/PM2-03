@@ -9,5 +9,4 @@ public interface Woche extends DatumsGroesse {
 	public int getWocheImMonat();
 	public int getWocheImJahr();
 	
-	public List<Tag> getTageDerWoche();
 }

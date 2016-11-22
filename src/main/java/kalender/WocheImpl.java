@@ -20,24 +20,6 @@ public class WocheImpl implements Woche {
 		intern.set(Calendar.MONTH, monat);
 		intern.set(Calendar.WEEK_OF_MONTH, wocheImMonat);
 	}
-
-	@Override
-	public List<Tag> getTageDerWoche()
-	{
-		List<Tag> retVal = new ArrayList<>();
-				
-		retVal.add(getStart().getTag());
-		
-		Datum iterator = new DatumImpl(getStart().getTag());		
-		
-		while(iterator.abstand(getEnde()).inTagen() > 0)
-		{
-			iterator = iterator.add(new DauerImpl(1, 0, 0));
-			retVal.add(iterator.getTag());
-		}	
-		
-		return retVal;
-	}
 	
 	@Override
 	public int getJahr() {
@@ -103,7 +85,7 @@ public class WocheImpl implements Woche {
 		if (intern == null) {
 			if (other.intern != null)
 				return false;
-		} else if (!(this.intern.compareTo(other.intern) != 0))
+		} else if (this.intern.compareTo(other.intern) != 0)
 			return false;
 		return true;
 	}

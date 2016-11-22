@@ -44,7 +44,8 @@ public class TerminImpl implements Termin {
 
 	@Override
 	public Termin verschiebeAuf(Datum datum) {
-		return new TerminImpl(this.beschreibung, datum, this.dauer);
+		this.datum = datum;
+		return this;
 	}
 
 	@Override
@@ -77,4 +78,44 @@ public class TerminImpl implements Termin {
 		return retVal;
 	}
 
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((beschreibung == null) ? 0 : beschreibung.hashCode());
+		result = prime * result + ((datum == null) ? 0 : datum.hashCode());
+		result = prime * result + ((dauer == null) ? 0 : dauer.hashCode());
+		return result;
+	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		TerminImpl other = (TerminImpl) obj;
+		if (beschreibung == null) {
+			if (other.beschreibung != null)
+				return false;
+		} else if (!beschreibung.equals(other.beschreibung))
+			return false;
+		if (datum == null) {
+			if (other.datum != null)
+				return false;
+		} else if (!datum.equals(other.datum))
+			return false;
+		if (dauer == null) {
+			if (other.dauer != null)
+				return false;
+		} else if (!dauer.equals(other.dauer))
+			return false;
+		return true;
+	}
+
+	
 }
