@@ -1,4 +1,4 @@
-package main.java.kalender.interfaces;
+package main.java.kalender.model.interfaces;
 
 import java.util.Calendar;
 

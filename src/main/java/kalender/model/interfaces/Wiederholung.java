@@ -1,5 +1,5 @@
-package main.java.kalender.interfaces;
-import main.java.kalender.WiederholungType;
+package main.java.kalender.model.interfaces;
+import main.java.kalender.model.WiederholungType;
 
 /**
  * 

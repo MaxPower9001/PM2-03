@@ -7,19 +7,19 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import main.java.kalender.DatumImpl;
-import main.java.kalender.DauerImpl;
-import main.java.kalender.MonatImpl;
-import main.java.kalender.TagImpl;
-import main.java.kalender.TerminImpl;
-import main.java.kalender.TerminKalenderImpl;
-import main.java.kalender.TerminMitWiederholungImpl;
-import main.java.kalender.UhrzeitImpl;
-import main.java.kalender.WiederholungType;
-import main.java.kalender.WocheImpl;
-import main.java.kalender.interfaces.Datum;
-import main.java.kalender.interfaces.Termin;
-import main.java.kalender.interfaces.TerminKalender;
+import main.java.kalender.model.DatumImpl;
+import main.java.kalender.model.DauerImpl;
+import main.java.kalender.model.MonatImpl;
+import main.java.kalender.model.TagImpl;
+import main.java.kalender.model.TerminImpl;
+import main.java.kalender.model.TerminKalenderImpl;
+import main.java.kalender.model.TerminMitWiederholungImpl;
+import main.java.kalender.model.UhrzeitImpl;
+import main.java.kalender.model.WiederholungType;
+import main.java.kalender.model.WocheImpl;
+import main.java.kalender.model.interfaces.Datum;
+import main.java.kalender.model.interfaces.Termin;
+import main.java.kalender.model.interfaces.TerminKalender;
 
 public class TerminKalenderTest {
 

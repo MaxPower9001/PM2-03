@@ -4,8 +4,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import main.java.kalender.DauerImpl;
-import main.java.kalender.interfaces.Dauer;
+import main.java.kalender.model.DauerImpl;
+import main.java.kalender.model.interfaces.Dauer;
 
 public class DauerTests {
 	

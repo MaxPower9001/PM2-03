@@ -1,4 +1,4 @@
-package main.java.kalender;
+package main.java.kalender.model;
 
 public enum WiederholungType {
 	TAEGLICH("täglich") {
