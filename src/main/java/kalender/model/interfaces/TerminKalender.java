@@ -12,8 +12,9 @@ public interface TerminKalender {
 
 	/*
 	 * Verschiebt das Datum des Termins auf das übergebene Datum
+	 * Gibt den verschobenen Termin zur�ck, null wenn der Termin nicht vorhanden
 	 */
-	public void verschiebenAuf(Termin termin, Datum datum);
+	public Termin verschiebenAuf(Termin termin, Datum datum);
 
 	/*
 	 * Löscht den Termin termin aus dem Kalender gibt true zurück, wenn termin

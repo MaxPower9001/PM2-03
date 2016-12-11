@@ -1,13 +1,20 @@
 package main.java.kalender.model;
 
 public enum WiederholungType {
-	TAEGLICH("tÃ¤glich") {
+	OHNE("ohne Wiederholung") {
+		@Override
+		public int inTagen() {
+			return 0;
+		}
+		
+	},
+	TAEGLICH("täglich") {
 		@Override
 		public int inTagen() {
 			return 1;
 		}
 	},
-	WOECHENTLICH("wÃ¶chentlich") {
+	WOECHENTLICH("wöchentlich") {
 		@Override
 		public int inTagen() {
 			return 7;

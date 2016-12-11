@@ -52,6 +52,11 @@ public class TerminMitWiederholungImpl extends TerminImpl implements TerminMitWi
 	}
 
 	
+	@Override
+	public String toString() {
+		return "TerminMitWiederholungImpl [" + super.toString() + "wdh=" + wdh + "]";
+	}
+
 	/**
 	 * Beispiel für den naiven Iterator, der alle Wiederholungen explizit aufzaehlt
 	 */
@@ -257,6 +262,12 @@ public class TerminMitWiederholungImpl extends TerminImpl implements TerminMitWi
 			return new WiederholungImpl(wdhType, anzahl + wdhCount, cycle);
 		}
 
+		@Override
+		public String toString() {
+			return "WiederholungImpl [wdhType=" + wdhType + ", anzahl=" + anzahl + ", cycle=" + cycle + "]";
+		}
+
+		
 
 	}
 

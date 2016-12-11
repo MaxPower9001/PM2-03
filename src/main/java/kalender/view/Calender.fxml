@@ -1,7 +1,121 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.embed.swing.*?>
+<?import javafx.scene.control.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" />
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.kalender.view.CalenderController">
+   <children>
+      <FlowPane prefHeight="600.0" prefWidth="400.0">
+         <children>
+            <Label alignment="CENTER" prefHeight="40.0" prefWidth="360.0" text="Super Awesome Kalender 5000" underline="true">
+               <FlowPane.margin>
+                  <Insets />
+               </FlowPane.margin>
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+            </Label>
+            <Group>
+               <children>
+                  <TextField fx:id="beschreibungInput" layoutX="14.0" layoutY="40.0" prefHeight="25.0" prefWidth="350.0" />
+                  <Label layoutX="16.0" layoutY="23.0" text="Beschreibung" />
+               </children>
+            </Group>
+            <Group>
+               <children>
+                  <Label layoutY="26.0" text="Von" />
+                  <DatePicker fx:id="vonDatePicker" layoutY="48.0" prefHeight="25.0" prefWidth="150.0" showWeekNumbers="true" />
+               </children>
+               <FlowPane.margin>
+                  <Insets right="20.0" top="10.0" />
+               </FlowPane.margin>
+            </Group>
+            <Group>
+               <children>
+                  <Label layoutX="-57.0" layoutY="4.0" />
+                  <TextField fx:id="von" layoutX="-57.0" layoutY="28.0" prefWidth="150.0" promptText="12:30" />
+               </children>
+               <FlowPane.margin>
+                  <Insets right="20.0" top="10.0" />
+               </FlowPane.margin>
+            </Group>
+            <Group>
+               <children>
+                  <Label layoutY="26.0" text="Bis" />
+                  <DatePicker fx:id="bisDatePicker" layoutY="48.0" prefHeight="25.0" prefWidth="150.0" showWeekNumbers="true" />
+               </children>
+               <FlowPane.margin>
+                  <Insets right="20.0" top="10.0" />
+               </FlowPane.margin>
+            </Group>
+            <Group layoutX="87.0" layoutY="176.0">
+               <children>
+                  <TextField fx:id="bis" layoutX="111.0" layoutY="28.0" prefWidth="150.0" promptText="13:30" />
+                  <Label layoutX="111.0" layoutY="4.0" />
+               </children>
+               <FlowPane.margin>
+                  <Insets right="20.0" top="10.0" />
+               </FlowPane.margin>
+            </Group>
+            <Group>
+               <children>
+                  <Label layoutX="3.0" text="Wiederholung" />
+                  <ComboBox fx:id="wiederholung" layoutX="3.0" layoutY="22.0" prefWidth="150.0" />
+               </children>
+               <FlowPane.margin>
+                  <Insets top="10.0" />
+               </FlowPane.margin>
+            </Group>
+            <Group fx:id="wiederholungInputs" disable="true">
+               <children>
+                  <TextField fx:id="zyklusInput" layoutX="-57.0" layoutY="28.0" prefWidth="150.0" />
+                  <Label layoutX="-57.0" layoutY="4.0" text="Zyklus:" />
+                  <TextField fx:id="wiederholungInput" layoutX="111.0" layoutY="28.0" prefWidth="150.0" />
+                  <Label layoutX="111.0" layoutY="4.0" text="Anzahl Wiederholungen:" />
+               </children>
+               <FlowPane.margin>
+                  <Insets top="10.0" />
+               </FlowPane.margin>
+            </Group>
+            <Button fx:id="speichernButton" mnemonicParsing="false" text="Termin speichern">
+               <FlowPane.margin>
+                  <Insets top="20.0" />
+               </FlowPane.margin>
+            </Button>
+            <Button fx:id="neuButton" mnemonicParsing="false" text="Neuer Termin">
+               <FlowPane.margin>
+                  <Insets left="60.0" top="20.0" />
+               </FlowPane.margin>
+            </Button>
+            <Label fx:id="sout" alignment="CENTER" prefWidth="360.0" textFill="RED">
+               <FlowPane.margin>
+                  <Insets top="20.0" />
+               </FlowPane.margin>
+            </Label>
+            <Separator prefHeight="7.0" prefWidth="360.0">
+               <FlowPane.margin>
+                  <Insets bottom="25.0" top="25.0" />
+               </FlowPane.margin></Separator>
+            <Group>
+               <children>
+                  <Label text="Erstellte Termine" />
+                  <ChoiceBox fx:id="termine" layoutY="28.0" prefWidth="360.0" />
+               </children>
+            </Group>
+            <Button fx:id="loeschenButton" mnemonicParsing="false" text="Termin löschen">
+               <FlowPane.margin>
+                  <Insets top="20.0" />
+               </FlowPane.margin>
+            </Button>
+         </children>
+         <padding>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+         </padding>
+      </FlowPane>
+   </children>
+</Pane>

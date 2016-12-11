@@ -96,6 +96,13 @@ public class DauerImpl implements Dauer {
 			return false;
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return "DauerImpl [minuten=" + minuten + "]";
+	}
+	
+	
 	
 	
 	

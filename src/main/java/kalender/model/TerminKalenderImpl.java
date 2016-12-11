@@ -30,12 +30,14 @@ public class TerminKalenderImpl implements TerminKalender {
 	}
 
 	@Override
-	public void verschiebenAuf(Termin termin, Datum datum) {
+	public Termin verschiebenAuf(Termin termin, Datum datum) {
 		int index = termine.indexOf(termin);
 		if(index > -1)
 		{
 			termine.get(index).verschiebeAuf(datum);
+			return termine.get(index);
 		}
+		return null;
 	}
 
 	@Override

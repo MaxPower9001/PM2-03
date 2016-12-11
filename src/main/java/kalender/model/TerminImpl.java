@@ -117,5 +117,12 @@ public class TerminImpl implements Termin {
 		return true;
 	}
 
+
+	@Override
+	public String toString() {
+		return "TerminImpl [beschreibung=" + beschreibung + ", datum=" + datum + ", dauer=" + dauer + "]";
+	}
+	
+	
 	
 }
