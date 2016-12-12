@@ -78,6 +78,7 @@ public class CalenderController {
 	// The actual calender
 	private TerminKalender terminKalender;
 	
+	// 24H Time format HH:mm
 	private SimpleDateFormat format24hTime;
 
 	/**
@@ -109,8 +110,263 @@ public class CalenderController {
 		emptyDialog();
 	}
 
+	private void fancyUpDatePicker() {
+		// Set DatePicker to today
+		vonDatePicker.setValue(LocalDate.now());
+		
+		// Configure DayCellFactory to deactivate all past days
+		vonDatePicker.setDayCellFactory((DatePicker dp) -> new DateCell() {
+			@Override
+			public void updateItem(LocalDate item, boolean empty) {
+				super.updateItem(item, empty);
+				if (item.isBefore(LocalDate.now())) {
+					setDisable(true);
+					setStyle("-fx-background-color: #ffc0cb;");
+				}
+			}
+		});
+		
+		// Configure DayCellFactory to deactivate all days before vonDatePicker
+		bisDatePicker.setDayCellFactory((DatePicker dp) -> new DateCell() {
+			@Override
+			public void updateItem(LocalDate item, boolean empty) {
+				super.updateItem(item, empty);
+				if (item.isBefore(vonDatePicker.getValue())) {
+					setDisable(true);
+					setStyle("-fx-background-color: #ffc0cb;");
+				}
+				
+				// Add fancy tooltip for date duration
+				long stay = ChronoUnit.DAYS.between(
+						vonDatePicker.getValue(), item);
+				setTooltip(new Tooltip("Ihr Termin dauert " + stay + " Tage."));
+			};
+		});
+
+	}
+
+	private void bindButtons() {
+		// Bind new Button to reset every Node with emptyDialog()
+		neuButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				emptyDialog();
+			}
+		});
+		// Make the save button save the actual Date
+		speichernButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				// If inputs are not filled correctly, bail out and display error message
+				if (!checkInputs()) {
+					sout.setStyle("-fx-text-fill: red;");
+					sout.setText("Angaben nicht vollständig!");
+				} else {
+					// Otherwise check if we are in moveMode
+					if(verschiebenMode){
+						verschiebeTermin();
+					}
+					else {
+						speichereNeuenTermin();
+					}
+					verschiebenMode = false;
+				}
+			}
+
+			private void verschiebeTermin() {
+				// get Tag from datePicker
+				Tag vonTag = new TagImpl(vonDatePicker.getValue().getYear(), vonDatePicker.getValue().getDayOfYear());
+				
+				// Get Date from von field
+				Date vonDate;				
+				try {
+					vonDate = format24hTime.parse(von.getText());
+				} catch (ParseException e) {							
+					e.printStackTrace();
+					return;
+				}
+				// Get calendar with get instance
+				Calendar vonCalendar = Calendar.getInstance();
+				
+				// Put date into calendar
+				vonCalendar.setTime(vonDate);
+				
+				// transform to uhrzeit with calendar
+				Uhrzeit vonUhrzeit = new UhrzeitImpl(vonCalendar.get(Calendar.HOUR_OF_DAY),vonCalendar.get(Calendar.MINUTE)); 
+				
+				// create datum with tag and uhrzeit
+				Datum vonDatum = new DatumImpl(vonTag, vonUhrzeit);
+				
+				// remove old date from combobox, move it and add the new one to combobox
+				Termin alterTermin = termine.getValue();
+				termine.getItems().remove(alterTermin);
+				Termin neuerTermin = terminKalender.verschiebenAuf(alterTermin, vonDatum);
+				termine.getItems().add(neuerTermin);				
+			}
+
+			private void speichereNeuenTermin() {
+				sout.setStyle("-fx-text-fill: green;");
+				sout.setText("Angaben vollständig, sehr gut!");
+
+				Termin terminZuSpeichern;
+				
+				// Get beschreibung from textfield
+				String beschreibung = beschreibungInput.getText();
+				
+				// Get vonTag and bisTag based on datePickers
+				Tag vonTag = new TagImpl(vonDatePicker.getValue().getYear(), vonDatePicker.getValue().getDayOfYear());
+				Tag bisTag = new TagImpl(bisDatePicker.getValue().getYear(), bisDatePicker.getValue().getDayOfYear());
+				
+				// Transform vonZeit and bisZeit into date
+				Date vonDate;
+				Date bisDate;
+				try {
+					vonDate = format24hTime.parse(von.getText());
+					bisDate = format24hTime.parse(bis.getText());
+				} catch (ParseException e) {							
+					e.printStackTrace();
+					return;
+				}
+				Calendar vonCalendar = Calendar.getInstance();
+				Calendar bisCalendar = Calendar.getInstance();
+				
+				// set those times to calendar
+				vonCalendar.setTime(vonDate);
+				bisCalendar.setTime(bisDate);
+				
+				// transform into Uhrzeit with help of calendar
+				Uhrzeit vonUhrzeit = new UhrzeitImpl(vonCalendar.get(Calendar.HOUR_OF_DAY),vonCalendar.get(Calendar.MINUTE)); 
+				Uhrzeit bisUhrzeit = new UhrzeitImpl(bisCalendar.get(Calendar.HOUR_OF_DAY),vonCalendar.get(Calendar.MINUTE));
+				
+				// create vonDatum and bisDatum with Tag and uhrzeit
+				Datum vonDatum = new DatumImpl(vonTag, vonUhrzeit);
+				Datum bisDatum = new DatumImpl(bisTag, bisUhrzeit);
+				
+				// calculate dauer based on datum
+				Dauer dauer = new DauerImpl(vonDatum, bisDatum);
+				
+				// if its not a date with wiederholung create Termin
+				if (wiederholungInputs.isDisabled()) {	
+					terminZuSpeichern = new TerminImpl(beschreibung,vonDatum,dauer);
+				} else {
+					// otherwise get wiederholung specific inputs
+					WiederholungType type = wiederholung.getValue();
+					int anzahl = Integer.parseInt(wiederholungInput.getText());
+					int zyklus = Integer.parseInt(zyklusInput.getText());
+					
+					// and create TerminMitWiederholung
+					terminZuSpeichern = new TerminMitWiederholungImpl(beschreibung, vonDatum, dauer, type, anzahl, zyklus);
+				}
+				
+				// if combo box does not already contain termin, add it to it and the internal terminKalendar
+				if(!termine.getItems().contains(terminZuSpeichern))
+				{
+					terminKalender.eintragen(terminZuSpeichern);
+					termine.getItems().add(terminZuSpeichern);
+				}
+			}
+		});
+		// Delete the selected date from list and internal calendar
+		loeschenButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				if(termine.getValue() != null)
+				{
+					terminKalender.terminLoeschen(termine.getValue());
+					termine.getItems().remove(termine.getValue());
+					emptyDialog();
+				}
+			}
+		});
+	}
+
+	private boolean checkInputs() {
+		// every input has to be filled
+		if (!(beschreibungInput.getText().isEmpty() || vonDatePicker.getValue() == null || bisDatePicker.getValue() == null || !vonBisValid())) {
+			if (!wiederholungInputs.isDisabled()) {
+				// if TerminMitWiederholung zyklus and wiederholung need to be filled
+				if (!(zyklusInput.getText().isEmpty() || wiederholungInput.getText().isEmpty()))
+					return true;
+				return false;
+			}
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Checks if the from-date and time is before to-dateand time
+	 * @return true if its before and false if its not
+	 */
+	private boolean vonBisValid() {
+		Date vonTime;
+		Date bisTime;
+		try {
+			vonTime = format24hTime.parse(von.getText());
+			bisTime = format24hTime.parse(bis.getText());
+		} catch (ParseException e) {
+			return false;
+		}
+		LocalDate vonDate = vonDatePicker.getValue();
+		LocalDate bisDate = bisDatePicker.getValue();
+		
+		// either the dates are not equal or the from time is before to time
+		return vonTime.before(bisTime) || !vonDate.equals(bisDate);
+	}
+
+	private void limitTextfields() {
+		zyklusInput.textProperty().addListener(createChangelistener(zyklusInput));
+		wiederholungInput.textProperty().addListener(createChangelistener(wiederholungInput));
+		
+		// Add a TextFormatter to from and to time 
+		try {
+			von.setTextFormatter(new TextFormatter<>(new DateTimeStringConverter(format24hTime), format24hTime.parse("12:00")));
+			bis.setTextFormatter(new TextFormatter<>(new DateTimeStringConverter(format24hTime), format24hTime.parse("13:00")));
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	private ChangeListener<String> createChangelistener(TextField tf) {
+		return new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				// only allows digits
+				if (!newValue.matches("\\d*")) {
+					tf.setText(newValue.replaceAll("[^\\d]", ""));
+				}
+			}
+		};
+	}
+
+	private void initWiederholung() {
+		// set wiederholung combobox to contain repetition enums
+		wiederholung.getItems().addAll(OHNE, WOECHENTLICH, TAEGLICH);
+		
+		// select base value
+		wiederholung.setValue(OHNE);
+		
+		// add listener to check if repetition selected to unlock/lock repetition-based input fields
+		wiederholung.valueProperty().addListener(
+				(ObservableValue<? extends WiederholungType> ov, WiederholungType oldSel, WiederholungType newSel) -> {
+					// moveMode overrides this listener
+					if(!verschiebenMode){
+						if (newSel.equals(OHNE))
+							wiederholungInputs.setDisable(true);
+						else
+							wiederholungInputs.setDisable(false);
+					}
+				});
+	}
+
 	private void initTermine() {
+		// add null to combobox
 		termine.getItems().add(null);
+		
+		// listener to transfer all values from selected date into input fields, if so 
+		// movemode is activated and only the from date and time are changeable
+		// if null selected inputs get cleared
 		termine.valueProperty().addListener(
 				(ObservableValue<? extends Termin> ov, Termin oldSel, Termin newSel) -> {
 					if(newSel != null)
@@ -153,217 +409,9 @@ public class CalenderController {
 				});		
 	}
 
-	private void fancyUpDatePicker() {
-		vonDatePicker.setValue(LocalDate.now());
-		
-		
-		Callback<DatePicker, DateCell> callback = (DatePicker dp) -> new DateCell() {
-			@Override
-			public void updateItem(LocalDate item, boolean empty) {
-				super.updateItem(item, empty);
-				if (item.isBefore(LocalDate.now())) {
-					setDisable(true);
-					setStyle("-fx-background-color: #ffc0cb;");
-				}
-			}
-		};
-		
-		vonDatePicker.setDayCellFactory(callback);
-		
-		bisDatePicker.setDayCellFactory((DatePicker dp) -> new DateCell() {
-			@Override
-			public void updateItem(LocalDate item, boolean empty) {
-				super.updateItem(item, empty);
-				if (item.isBefore(vonDatePicker.getValue())) {
-					setDisable(true);
-					setStyle("-fx-background-color: #ffc0cb;");
-				}
-				long stay = ChronoUnit.DAYS.between(
-						vonDatePicker.getValue(), item);
-				setTooltip(new Tooltip("Ihr Termin dauert " + stay + " Tage."));
-			};
-		});
-
-	}
-
-	private void bindButtons() {
-		// Bind new Button to reset every Node with emptyDialog()
-		neuButton.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				emptyDialog();
-			}
-		});
-		// Make the save button save the actual Date
-		speichernButton.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				if (!checkInputs()) {
-					sout.setStyle("-fx-text-fill: red;");
-					sout.setText("Angaben nicht vollständig!");
-				} else {
-					if(verschiebenMode){
-						verschiebeTermin();
-					}
-					else {
-						speichereNeuenTermin();
-					}
-					verschiebenMode = false;
-				}
-			}
-
-			private void verschiebeTermin() {
-				Tag vonTag = new TagImpl(vonDatePicker.getValue().getYear(), vonDatePicker.getValue().getDayOfYear());
-				Date vonDate;				
-				try {
-					vonDate = format24hTime.parse(von.getText());
-				} catch (ParseException e) {							
-					e.printStackTrace();
-					return;
-				}
-				Calendar vonCalendar = Calendar.getInstance();
-				
-				vonCalendar.setTime(vonDate);
-				
-				Uhrzeit vonUhrzeit = new UhrzeitImpl(vonCalendar.get(Calendar.HOUR_OF_DAY),vonCalendar.get(Calendar.MINUTE)); 
-				
-				Datum vonDatum = new DatumImpl(vonTag, vonUhrzeit);
-				
-				Termin alterTermin = termine.getValue();
-				termine.getItems().remove(alterTermin);
-				Termin neuerTermin = terminKalender.verschiebenAuf(alterTermin, vonDatum);
-				termine.getItems().add(neuerTermin);				
-			}
-
-			private void speichereNeuenTermin() {
-				sout.setStyle("-fx-text-fill: green;");
-				sout.setText("Angaben vollständig, sehr gut!");
-
-				Termin terminZuSpeichern;
-				
-				String beschreibung = beschreibungInput.getText();
-				Tag vonTag = new TagImpl(vonDatePicker.getValue().getYear(), vonDatePicker.getValue().getDayOfYear());
-				Tag bisTag = new TagImpl(bisDatePicker.getValue().getYear(), bisDatePicker.getValue().getDayOfYear());
-				
-				Date vonDate;
-				Date bisDate;
-				try {
-					vonDate = format24hTime.parse(von.getText());
-					bisDate = format24hTime.parse(bis.getText());
-				} catch (ParseException e) {							
-					e.printStackTrace();
-					return;
-				}
-				Calendar vonCalendar = Calendar.getInstance();
-				Calendar bisCalendar = Calendar.getInstance();
-				
-				vonCalendar.setTime(vonDate);
-				bisCalendar.setTime(bisDate);
-				
-				Uhrzeit vonUhrzeit = new UhrzeitImpl(vonCalendar.get(Calendar.HOUR_OF_DAY),vonCalendar.get(Calendar.MINUTE)); 
-				Uhrzeit bisUhrzeit = new UhrzeitImpl(bisCalendar.get(Calendar.HOUR_OF_DAY),vonCalendar.get(Calendar.MINUTE));
-				
-				Datum vonDatum = new DatumImpl(vonTag, vonUhrzeit);
-				Datum bisDatum = new DatumImpl(bisTag, bisUhrzeit);
-				
-				Dauer dauer = new DauerImpl(vonDatum, bisDatum);
-				
-				if (wiederholungInputs.isDisabled()) {	
-					terminZuSpeichern = new TerminImpl(beschreibung,vonDatum,dauer);
-				} else {
-					WiederholungType type = wiederholung.getValue();
-					int anzahl = Integer.parseInt(wiederholungInput.getText());
-					int zyklus = Integer.parseInt(zyklusInput.getText());
-					
-					terminZuSpeichern = new TerminMitWiederholungImpl(beschreibung, vonDatum, dauer, type, anzahl, zyklus);
-				}
-				
-				if(!termine.getItems().contains(terminZuSpeichern))
-				{
-					terminKalender.eintragen(terminZuSpeichern);
-					termine.getItems().add(terminZuSpeichern);
-				}
-			}
-		});
-		
-		loeschenButton.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				if(termine.getValue() != null)
-				{
-					terminKalender.terminLoeschen(termine.getValue());
-					termine.getItems().remove(termine.getValue());
-					emptyDialog();
-				}
-			}
-		});
-	}
-
-	private boolean checkInputs() {
-		if (!(beschreibungInput.getText().isEmpty() || vonDatePicker.getValue() == null || bisDatePicker.getValue() == null || !vonBisValid())) {
-			if (!wiederholungInputs.isDisabled()) {
-				if (!(zyklusInput.getText().isEmpty() || wiederholungInput.getText().isEmpty()))
-					return true;
-				return false;
-			}
-			return true;
-		}
-		return false;
-	}
-
-	private boolean vonBisValid() {
-		Date vonTime;
-		Date bisTime;
-		try {
-			vonTime = format24hTime.parse(von.getText());
-			bisTime = format24hTime.parse(bis.getText());
-		} catch (ParseException e) {
-			return false;
-		}
-		LocalDate vonDate = vonDatePicker.getValue();
-		LocalDate bisDate = bisDatePicker.getValue();
-		
-		return vonTime.before(bisTime) || !vonDate.equals(bisDate);
-	}
-
-	private void limitTextfields() {
-		zyklusInput.textProperty().addListener(createChangelistener(zyklusInput));
-		wiederholungInput.textProperty().addListener(createChangelistener(wiederholungInput));
-		
-		try {
-			von.setTextFormatter(new TextFormatter<>(new DateTimeStringConverter(format24hTime), format24hTime.parse("12:00")));
-			bis.setTextFormatter(new TextFormatter<>(new DateTimeStringConverter(format24hTime), format24hTime.parse("13:00")));
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	private ChangeListener<String> createChangelistener(TextField tf) {
-		return new ChangeListener<String>() {
-			@Override
-			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-				if (!newValue.matches("\\d*")) {
-					tf.setText(newValue.replaceAll("[^\\d]", ""));
-				}
-			}
-		};
-	}
-
-	private void initWiederholung() {
-		wiederholung.getItems().addAll(OHNE, WOECHENTLICH, TAEGLICH);
-		wiederholung.setValue(OHNE);
-		wiederholung.valueProperty().addListener(
-				(ObservableValue<? extends WiederholungType> ov, WiederholungType oldSel, WiederholungType newSel) -> {
-					if(!verschiebenMode){
-						if (newSel.equals(OHNE))
-							wiederholungInputs.setDisable(true);
-						else
-							wiederholungInputs.setDisable(false);
-					}
-				});
-	}
-
+	/**
+	 * resets the gui to its standard input values
+	 */
 	private void emptyDialog() {
 		beschreibungInput.clear();
 		vonDatePicker.setValue(LocalDate.now());
