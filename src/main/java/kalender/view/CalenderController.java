@@ -155,6 +155,8 @@ public class CalenderController {
 
 	private void fancyUpDatePicker() {
 		vonDatePicker.setValue(LocalDate.now());
+		
+		
 		Callback<DatePicker, DateCell> callback = (DatePicker dp) -> new DateCell() {
 			@Override
 			public void updateItem(LocalDate item, boolean empty) {
@@ -206,7 +208,6 @@ public class CalenderController {
 					else {
 						speichereNeuenTermin();
 					}
-
 					verschiebenMode = false;
 				}
 			}
@@ -319,7 +320,10 @@ public class CalenderController {
 		} catch (ParseException e) {
 			return false;
 		}
-		return vonTime.before(bisTime);
+		LocalDate vonDate = vonDatePicker.getValue();
+		LocalDate bisDate = bisDatePicker.getValue();
+		
+		return vonTime.before(bisTime) || !vonDate.equals(bisDate);
 	}
 
 	private void limitTextfields() {
