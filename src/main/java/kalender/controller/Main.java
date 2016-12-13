@@ -13,7 +13,7 @@ public class Main extends Application{
 	public void start(Stage primaryStage) throws Exception {
 		try{
 			primaryStage.setTitle("Calender and then some");
-			primaryStage.getIcons().add(new Image("https://image.freepik.com/free-icon/thumbs-up-hand-outline_318-41813.jpg"));
+			
 			
 			Pane root = (Pane) FXMLLoader.load(getClass().getResource("../view/Calender.fxml"));
 			
